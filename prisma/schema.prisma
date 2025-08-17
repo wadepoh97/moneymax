@@ -1,0 +1,30 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = "postgresql://postgres:admin123@localhost:5432/appointments"
+}
+
+model Appointment {
+  id         String   @id @default(cuid())
+  date       String   // YYYY-MM-DD
+  startTime  String   // HH:mm
+  endTime    String   // HH:mm
+  slotsTaken Int
+  createdAt  DateTime @default(now())
+
+  @@index([date, startTime])
+}
+
+model Config {
+  id                      Int     @id @default(1)
+  slotDurationMinutes     Int     @default(30) // min 5
+  maxSlotsPerAppointment  Int     @default(5)  // 1..5
+  openTime                String  @default("09:00")
+  closeTime               String  @default("18:00")
+  workingDaysJson         String  @default("[1,2,3,4,5]") // 1=Mon .. 7=Sun
+  daysOffJson             String  @default("[]") // e.g., ["2025-08-31", ...]
+  breaksJson              String  @default("[]") // [{ "start":"12:30", "end":"13:30" }]
+}
